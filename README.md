@@ -58,8 +58,8 @@ CLI Report
 ## Setup
 
 ```bash
-git clone https://github.com/yesufh/defai-systems-case-study.git
-cd defai-systems-case-study
+git clone git@github.com:yesufh/defai-infrastructure-study.git
+cd defai-infrastructure-study
 
 python -m venv .venv
 source .venv/bin/activate
