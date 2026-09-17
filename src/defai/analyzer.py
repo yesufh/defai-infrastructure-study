@@ -11,6 +11,8 @@ def summarize_transaction(
         return TransactionSummary(
             signature=signature,
             slot=None,
+            block_time=None,
+
             success=False,
             fee_lamports=0,
             account_count=0,
@@ -26,6 +28,8 @@ def summarize_transaction(
     return TransactionSummary(
         signature=signature,
         slot=transaction.get("slot"),
+        block_time=transaction.get("blockTime"),
+
         success=meta.get("err") is None,
         fee_lamports=meta.get("fee", 0),
         account_count=len(account_keys),

@@ -5,6 +5,8 @@ from typing import Optional
 @dataclass
 class TransactionSummary:
     signature: str
+    block_time: Optional[int]
+
     slot: Optional[int]
     success: bool
     fee_lamports: int
