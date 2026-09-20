@@ -1,8 +1,9 @@
 from fastapi import FastAPI
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, PlainTextResponse
 
 from defai.analytics import get_transaction_analytics
 from defai.dashboard import render_dashboard
+from defai.metrics import generate_metrics
 from defai.storage.database import Database
 
 
@@ -37,3 +38,9 @@ def analytics() -> dict[str, int | float]:
 @app.get("/dashboard", response_class=HTMLResponse)
 def dashboard() -> str:
     return render_dashboard()
+
+
+@app.get("/metrics", response_class=PlainTextResponse)
+def metrics() -> str:
+    return generate_metrics()
+    return generate_metrics()

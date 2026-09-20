@@ -21,3 +21,10 @@ def test_dashboard_endpoint():
     assert response.status_code == 200
     assert "DeFAI Analytics Dashboard" in response.text
     assert "Total Transactions" in response.text
+def test_metrics_endpoint():
+    response = client.get("/metrics")
+
+    assert response.status_code == 200
+    assert "defai_transactions_total" in response.text
+    assert "defai_transactions_successful" in response.text
+    assert "defai_transactions_failed" in response.text
