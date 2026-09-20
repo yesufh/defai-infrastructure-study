@@ -15,3 +15,9 @@ def test_root_endpoint():
         "status": "running",
     }
 
+def test_dashboard_endpoint():
+    response = client.get("/dashboard")
+
+    assert response.status_code == 200
+    assert "DeFAI Analytics Dashboard" in response.text
+    assert "Total Transactions" in response.text
