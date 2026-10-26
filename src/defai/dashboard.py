@@ -9,13 +9,64 @@ def render_dashboard() -> str:
 
     with Database() as db:
         analytics = get_transaction_analytics(db)
-
+    history = """
+        <h2>Recent Transactions</h2>
+        <p id="history-status">Loading transactions...</p>
+        <div style="overflow-x:auto">
+            <table style="width:100%;background:white;text-align:left">
+                <thead>
+                    <tr>
+                        <th>Signature</th>
+                        <th>Status</th>
+                        <th>Fee (lamports)</th>
+                        <th>Slot</th>
+                    </tr>
+                </thead>
+                <tbody id="transaction-rows"></tbody>
+            </table>
+        </div>
+        <script>
+        async function loadTransactions() {
+            const status = document.getElementById("history-status");
+            const body = document.getElementById("transaction-rows");
+            try {
+                const response = await fetch("/transactions?limit=20");
+                if (!response.ok) throw new Error("Request failed");
+                const data = await response.json();
+                for (const tx of data.transactions) {
+                    const row = document.createElement("tr");
+                    const values = [
+                        tx.signature,
+                        tx.success ? "Success" : "Failed",
+                        tx.fee_lamports.toLocaleString(),
+                        tx.slot ?? "Unknown"
+                    ];
+                    for (const value of values) {
+                        const cell = document.createElement("td");
+                        cell.textContent = String(value);
+                        cell.style.padding = "12px";
+                        row.appendChild(cell);
+                    }
+                    body.appendChild(row);
+                }
+                status.textContent = data.total === 0
+                    ? "No stored transactions yet."
+                    : `Showing ${data.transactions.length} of ${data.total} stored transactions, newest slots first.`;
+            } catch (error) {
+                status.textContent = "Could not load transactions. Refresh to try again.";
+            }
+        }
+        loadTransactions();
+        </script>
+    """
     return f"""
     <!DOCTYPE html>
     <html>
     <head>
         <title>DeFAI Analytics Dashboard</title>
         <style>
+        {history}
+    </body>
             body {{
                 font-family: Arial, sans-serif;
                 max-width: 900px;
