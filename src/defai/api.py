@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
 from fastapi.responses import HTMLResponse, PlainTextResponse
 
 from defai.analytics import get_transaction_analytics
@@ -43,4 +43,32 @@ def dashboard() -> str:
 @app.get("/metrics", response_class=PlainTextResponse)
 def metrics() -> str:
     return generate_metrics()
-    return generate_metrics()
+
+
+@app.get("/transactions")
+def transactions(
+    limit: int = Query(default=20, ge=1, le=100),
+    offset: int = Query(default=0, ge=0),
+) -> dict:
+    with Database() as db:
+        total = db.count_transactions()
+        rows = db.connection.execute(
+            """
+            SELECT signature, success, fee_lamports,
+                   account_count, slot, block_time
+            FROM transactions
+            ORDER BY slot DESC, signature ASC
+            LIMIT ? OFFSET ?
+            """,
+            (limit, offset),
+        ).fetchall()
+
+    return {
+        "total": total,
+        "limit": limit,
+        "offset": offset,
+        "transactions": [
+            {**dict(row), "success": bool(row["success"])}
+            for row in rows
+        ],
+    }
