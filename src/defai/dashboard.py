@@ -66,6 +66,7 @@ def render_dashboard() -> str:
         <title>DeFAI Analytics Dashboard</title>
         <style>
         {history}
+    {history}
     </body>
             body {{
                 font-family: Arial, sans-serif;
@@ -134,6 +135,7 @@ def render_dashboard() -> str:
                 <div class="label">Average Fee (Lamports)</div>
             </div>
         </div>
+    {history}
     </body>
     </html>
     """
